@@ -18,9 +18,6 @@ type Type int
 
 const JSON Type = iota
 
-// var db *sql.DB
-// var err error
-
 func main() {
 
 	var adder adding.Service

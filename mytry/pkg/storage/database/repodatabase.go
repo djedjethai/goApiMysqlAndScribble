@@ -4,8 +4,8 @@ import (
 	// "encoding/json"
 	"database/sql"
 	"fmt"
+	"github.com/djedjethai/mytry/pkg/adding"
 	_ "github.com/go-sql-driver/mysql"
-	// "github.com/djedjethai/mytry/pkg/adding"
 	// "github.com/djedjethai/mytry/pkg/listing"
 	// "github.com/djedjethai/mytry/pkg/reviewing"
 	// "github.com/djedjethai/mytry/pkg/storage"
@@ -17,8 +17,19 @@ import (
 	// "time"
 )
 
+const (
+	username = "root"
+	password = "root"
+	hostname = "mysql:3306"
+	database = "goapi"
+)
+
 type Storage struct {
 	db *sql.DB
+}
+
+func dsn() string {
+	return fmt.Sprintf("%s:%s@tcp(%s)/%s?charset=utf8", username, password, hostname, database)
 }
 
 func NewStorage() (*Storage, error) {
@@ -26,7 +37,8 @@ func NewStorage() (*Storage, error) {
 
 	s := new(Storage)
 
-	s.db, err = sql.Open("mysql", "root:root@tcp(mysql:3306)/goapi?charset=utf8")
+	s.db, err = sql.Open("mysql", dsn())
+	// s.db, err = sql.Open("mysql", "root:root@tcp(mysql:3306)/goapi?charset=utf8")
 	fmt.Println(err)
 	defer s.db.Close()
 
@@ -36,7 +48,9 @@ func NewStorage() (*Storage, error) {
 		return nil, err
 	}
 
-	stmt, err := s.db.Prepare(`CREATE TABLE beer (name VARCHAR(20));`)
+	query := `CREATE TABLE IF NOT EXISTS beer(beer_id int primary key auto_increment, beer_name VARCHAR(20), beer_brewery VARCHAR(20), beer_abv FLOAT(25), beer_shortdesc text, created_at datetime default CURRENT_TIMESTAMP, updated_at datetime default CURRENT_TIMESTAMP)`
+
+	stmt, err := s.db.Prepare(query)
 	fmt.Printf("err at create table: %v", err)
 	defer stmt.Close()
 
@@ -49,4 +63,12 @@ func NewStorage() (*Storage, error) {
 	fmt.Printf("table beer created: %v", n)
 
 	return s, nil
+}
+
+func (s *Storage) AddBeerDB(beer adding.Beer) (string, error) {
+
+	// query
+	fmt.Println("add some beer, cooool")
+
+	return "fine", nil
 }

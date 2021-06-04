@@ -18,12 +18,17 @@ type Repository interface {
 	GetAllBeers() ([]listing.Beer, error)
 }
 
-type service struct {
-	r Repository
+type RepoDatabase interface {
+	AddBeerDB(Beer) (string, error)
 }
 
-func NewService(r Repository) Service {
-	return &service{r}
+type service struct {
+	r   Repository
+	rdb RepoDatabase
+}
+
+func NewService(r Repository, rdb RepoDatabase) Service {
+	return &service{r, rdb}
 }
 
 func (s *service) AddBeerS(b Beer) (string, error) {
@@ -43,10 +48,14 @@ func (s *service) AddBeerS(b Beer) (string, error) {
 		}
 	}
 
+	// add beer in cache
 	bid, err := s.r.AddBeer(b)
 	if err != nil {
 		return "", ErrRegister
 	}
+
+	// add beer in db
+	_, _ = s.rdb.AddBeerDB(b)
 
 	return bid, nil
 }

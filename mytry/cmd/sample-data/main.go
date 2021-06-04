@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"github.com/djedjethai/mytry/pkg/adding"
 	"github.com/djedjethai/mytry/pkg/reviewing"
+	"github.com/djedjethai/mytry/pkg/storage/database"
 	"github.com/djedjethai/mytry/pkg/storage/model"
 )
 
@@ -12,8 +13,9 @@ func main() {
 	var reviewer reviewing.Service
 
 	s, _ := model.NewStorage()
+	sdb, _ := database.NewStorage()
 
-	adder = adding.NewService(s)
+	adder = adding.NewService(s, sdb)
 	reviewer = reviewing.NewService(s)
 
 	errBeer := adder.AddBeerSampleS(DefaultBeers)

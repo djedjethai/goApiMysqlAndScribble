@@ -27,9 +27,9 @@ func main() {
 	var updater updating.Service
 
 	s, _ := model.NewStorage()
-	_, _ = database.NewStorage()
+	sdb, _ := database.NewStorage()
 
-	adder = adding.NewService(s)
+	adder = adding.NewService(s, sdb)
 	lister = listing.NewService(s)
 	reviewer = reviewing.NewService(s)
 	deleter = deleting.NewService(s)
